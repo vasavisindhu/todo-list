@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todolist</title>
+    <style>
+        *{
+            padding:0px;
+            margin:0px;
+            box-sizing: border-box;
+        }
+        body{
+            width:100%;
+            height:100vh;
+            background-image: radial-gradient(white,violet,rgb(205, 64, 205),blueviolet);
+        }
+        h1, #main{
+           text-align: center;
+           margin-top:20px;
+           
+        }
+        #inp{
+            padding:5px;
+        }
+        h1{
+            animation-name: anim;
+            animation-duration: 5s;
+            animation-iteration-count: infinite;  
+            animation-fill-mode: forwards;
+        }
+        #main{
+            width:500px;
+            height:200px;
+            display:flex;
+            flex-direction: column;
+            flex-wrap:wrap;
+            align-items: center;
+            padding:20px;
+            /* border: 2px solid violet; */
+            /* margin-left:330px;
+            margin-top:50px; */
+            padding-top:30px;
+            /* box-shadow: 2px 2px 2px white;
+            border-radius:20px; */
+            margin:auto;
+            z-index:0;
+
+
+        }
+        #inp, #status{
+            width:300px;
+            height:30px;
+            /* margin-top:20px; */
+        }
+        #buttons{
+            width:300px;
+            display:flex;
+            flex-direction: row;
+            padding-top: 20px;
+            justify-content: space-between;
+           
+        }
+        
+        #a,#s,#c{
+            padding:10px;
+            width:80px;
+            background-color: blueviolet;
+            margin-left:10px;
+            box-shadow: 2px 2px black;
+        }
+        #box input[type="text"]{
+            margin-bottom: 20px;
+            border:2px solid black;
+            border-radius: 10px;
+        }
+        select{
+            border:2px solid black;
+            border-radius: 10px;
+        }
+        @keyframes anim{
+            from{
+                color:white;
+                font-size: 5vh;
+
+            }
+            to{
+                color:blueviolet;
+                font-size: 10vh;
+                /* transform:rotate(360deg); */
+            }
+        }
+        @media (max-width:550px){
+            *{
+                padding:0px;
+                margin:0px;
+                box-sizing: border-box;
+            }
+            body{
+                width:100%;
+                height:150vh;
+                background-image: linear-gradient(pink,violet,rgb(205, 64, 205));
+            }
+            h1{
+                text-align: center;
+                margin-left: 50px;
+                justify-content: center;
+            }
+            #main{
+                display:flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                margin:auto;
+                margin-top:200px;
+                padding-top:5px;
+            }
+            #buttons{
+                display:flex;
+                flex-direction:column;
+                flex-wrap:wrap;
+                /* margin:auto; 
+                justify-content: center; */
+                margin-left: 130px;
+                
+            }
+            #buttons input[type="button"] {
+                width: 150px;   /* Set width */
+                height: 30px; /* Set height */
+                margin-bottom: 20px;
+            }
+            #box{
+                margin:auto;
+                margin-top:20px;
+            }
+            #box input[type="text"]{
+                margin-bottom: 20px;
+                border-radius: 10px;
+            } 
+            select{
+                border:2px solid black;
+                border-radius: 10px;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <h1>To Do List</h1>
+    <div id="main">
+        <div id="box">
+            <input id="inp" type="text"placeholder="Add or Search task"><br>
+            <!-- <label>Status</label> -->
+            <select id="status">
+                <option>Status</option>
+                <option>Complete</option>
+                <option>Incomplete</option>
+        </select>
+        </div>
+        <div id="buttons">
+            <input type="button" id="a" value="Add" onclick="add()">
+            <input type="button" id="s" value="Search" onclick="search()">
+            <input type="button" id="c" value="Clear" onclick="clearAll()">
+        </div>
+    </div>
+    <script>
+        let details=[];
+        window.onload=function(){
+            getValue();
+        }
+        function getValue(){
+            let stringFormat = localStorage.getItem("details");
+            if(stringFormat==null){
+                return
+            }
+            console.log(stringFormat);
+
+            let convertedDetailsArray = JSON.parse(stringFormat);
+            // console.log(convertedDetailsArray);
+
+            details=convertedDetailsArray;
+
+            let con = "";
+            for(let i=0;i<convertedDetailsArray.length;i++){
+                con += `<h1>Task: ${convertedDetailsArray[i].inp},Status: ${convertedDetailsArray[i].status}</h1>`;
+            }
+
+        }
+        function add(event){
+            let val = document.getElementById("inp").value;
+            let sta = document.getElementById("status").value;
+            let width = window.innerWidth;
+
+            if (val.trim() === "") 
+            return;
+
+            // Create a new task object
+            let newTask = { task: val ,status: sta};
+
+            // Add task to the details array
+            details.push(newTask);
+
+            // Save updated details array to localStorage
+            let jsonString = JSON.stringify(details);
+            localStorage.setItem("details", jsonString);
+
+            let e = document.createElement("div");
+            e.classList.add("task"); // Add class for easy targeting
+            e.textContent=val +" - "+sta;
+            
+            document.body.appendChild(e);
+            if(width>550)
+            {
+                e.style.backgroundColor="violet";
+                e.style.width="500px";
+                e.style.height="30px";
+                e.style.marginLeft="390px";
+                e.style.padding="10px";
+                e.style.marginTop="20px";
+                e.style.color="white";
+                e.style.fontSize="3vh";
+                e.style.borderWidth="2px";
+                // e.style.borderColor="red";
+                e.style.borderRadius="20px";
+            
+
+                let b = document.createElement("button");
+                e.appendChild(b);
+                b.style.width="50px";
+                b.style.height="20px";
+                b.textContent="Delete";
+                b.style.backgroundColor="blueviolet";
+                b.style.float="right";
+                b.onclick=function(){
+                    let index = details.findIndex(task => task.task === val);
+                    if (index !== -1) {
+                        details.splice(index, 1); // Remove from array
+                        localStorage.setItem("details", JSON.stringify(details)); // Update localStorage
+                        e.remove(); // Remove task from DOM
+                    }
+                }
+            }
+            else{
+                
+                // e.style.width="100px";
+                // e.style.height="30px";
+                e.style.width = "380px";
+                e.style.height = "auto";
+                e.style.marginLeft="50px";
+                e.style.padding="10px";
+                e.style.marginTop="5px";
+                e.style.backgroundColor="violet";
+                e.style.color="white";
+                e.style.fontSize="3vh";
+                e.style.borderWidth="2px";
+                // e.style.borderColor="red";
+                e.style.borderRadius="10px";
+            
+
+                let b = document.createElement("button");
+                e.appendChild(b);
+                b.style.width="50px";
+                b.style.height="20px";
+                b.textContent="Delete";
+                b.style.backgroundColor="blueviolet";
+                b.style.float="right";
+                b.onclick=function(){
+                    let index = details.findIndex(task => task.task === val);
+                    if (index !== -1) {
+                        details.splice(index, 1); // Remove from array
+                        localStorage.setItem("details", JSON.stringify(details)); // Update localStorage
+                        e.remove(); // Remove task from DOM
+                    }
+                }
+
+            }
+        
+
+            document.getElementById("inp").value="";
+            document.getElementById("status").value="Status";
+           
+        }
+        function search() {
+            let query = document.getElementById("inp").value.trim().toLowerCase(); // Task name input
+            let selectedStatus = document.getElementById("status").value; // Status dropdown value
+
+            // Filter tasks based on task name OR status
+            let filteredTasks = details.filter(task => {
+                let taskMatches = query ? task.task.toLowerCase().includes(query) : true; // If query exists, check name
+                let statusMatches = selectedStatus !== "Status" ? task.status === selectedStatus : true; // Check status if selected
+                return taskMatches && statusMatches;
+            });
+
+            // Clear any previously displayed tasks
+            document.body.querySelectorAll("div.task").forEach(e => e.remove());
+
+            // Render the filtered tasks
+            if (filteredTasks.length > 0) {
+                filteredTasks.forEach(task => add(task.task, task.status));
+            } else {
+                alert("No such task exist.");
+            }
+
+            // Reset fields after search
+            document.getElementById("inp").value = ""; // Clear input field
+            document.getElementById("status").value = "Status"; // Reset status dropdown
+        }
+        function clearAll() {
+            // Clear tasks from localStorage
+            localStorage.removeItem("details");
+
+            // Clear tasks from the screen
+            let taskElements = document.querySelectorAll("div.task");
+            taskElements.forEach(taskElement => taskElement.remove());
+
+            // Optionally, reset input fields
+            document.getElementById("inp").value = "";
+            document.getElementById("status").value = "Status";
+        }
+
+        
+       
+    </script>
+</body>
+</html>
